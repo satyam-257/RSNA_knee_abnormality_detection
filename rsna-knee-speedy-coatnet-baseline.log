@@ -1,0 +1,37 @@
+[{"stream_name":"stderr","time":8.740069615,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.741008005,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.741014945,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.741019235,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":9.443508115,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.443587705,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.443597055,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.443610675,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":16.583479359000002,"data":"Resolved Competition Directory: /kaggle/input/competitions/rsna-knee-abnormality-detection\n"}
+,{"stream_name":"stdout","time":16.583563789,"data":"Found test files: True True\n"}
+,{"stream_name":"stdout","time":16.676644314,"data":"Test studies to predict: 3\n"}
+,{"stream_name":"stdout","time":16.676682034,"data":"submission.csv written successfully!\n"}
+,{"stream_name":"stdout","time":16.676689064,"data":"Shape: (3, 13)\n"}
+,{"stream_name":"stdout","time":16.676694263999998,"data":"Null values: 0\n"}
+,{"stream_name":"stdout","time":16.676699494,"data":"                                    StudyInstanceUID   ACL   MCL  \\\n"}
+,{"stream_name":"stdout","time":16.676704044,"data":"0  1.2.826.0.1.3680043.8.498.10047035057544427318...  0.41  0.16   \n"}
+,{"stream_name":"stdout","time":16.676708624,"data":"1  1.2.826.0.1.3680043.8.498.10062861783145312629...  0.41  0.16   \n"}
+,{"stream_name":"stdout","time":16.676713464,"data":"2  1.2.826.0.1.3680043.8.498.10067514707072572280...  0.41  0.16   \n"}
+,{"stream_name":"stdout","time":16.676718464,"data":"\n"}
+,{"stream_name":"stdout","time":16.676721544,"data":"   Medial Meniscus  Lateral Meniscus  Medial OA  Lateral OA  PF OA  Effusion  \\\n"}
+,{"stream_name":"stdout","time":16.676724484,"data":"0             0.45               0.4       0.26        0.19   0.36       0.6   \n"}
+,{"stream_name":"stdout","time":16.676727534,"data":"1             0.45               0.4       0.26        0.19   0.36       0.6   \n"}
+,{"stream_name":"stdout","time":16.676730544,"data":"2             0.45               0.4       0.26        0.19   0.36       0.6   \n"}
+,{"stream_name":"stdout","time":16.676733444,"data":"\n"}
+,{"stream_name":"stdout","time":16.676743354,"data":"   Synovitis  Baker's  Contusion  Fracture  \n"}
+,{"stream_name":"stdout","time":16.676746234,"data":"0       0.46     0.21       0.33      0.31  \n"}
+,{"stream_name":"stdout","time":16.676749134,"data":"1       0.46     0.21       0.33      0.31  \n"}
+,{"stream_name":"stdout","time":16.676753404,"data":"2       0.46     0.21       0.33      0.31  \n"}
+,{"stream_name":"stderr","time":20.044303505,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":20.044353235,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":20.227310695,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":20.227353816,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":20.946741137,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":21.213619452,"data":"[NbConvertApp] Writing 8569 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":23.812567919,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":24.606099364,"data":"[NbConvertApp] Writing 290256 bytes to __results__.html\n"}
+]

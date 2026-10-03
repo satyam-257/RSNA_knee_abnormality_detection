@@ -1,0 +1,160 @@
+[{"stream_name":"stderr","time":7.497913835,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.49796151,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.497965958,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.4979685,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.119355482,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.119385035,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.119388586,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.119391029,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":19.539823958,"data":"cuda:0 probe PASS (compute 7.5)\n"}
+,{"stream_name":"stdout","time":19.573735962,"data":"cuda:1 probe PASS (compute 7.5)\n"}
+,{"stream_name":"stdout","time":19.573771701,"data":"devices: ['cuda:0', 'cuda:1']\n"}
+,{"stream_name":"stdout","time":19.573775483,"data":"[startup] imports+GPU preflight: 10.33s\n"}
+,{"stream_name":"stdout","time":19.607026909,"data":"[    0.0s] input root: /kaggle/input/competitions/rsna-knee-abnormality-detection\n"}
+,{"stream_name":"stdout","time":19.60852426,"data":"[startup] competition-root preflight: 0.03s\n"}
+,{"stream_name":"stdout","time":19.765798451,"data":"[    0.2s] memory: 29.5 GB available, 13.3 GB to the cache; sizing for 4407 train + 1322 test studies -\u003e 1 group(s) of 3 = 3 slices per slot\n"}
+,{"stream_name":"stdout","time":19.766566046,"data":"[    0.2s] cache layout: 1 groups x 3 slices = 3 per slot\n"}
+,{"stream_name":"stdout","time":20.110041537,"data":"[    0.5s] weights package: 20 member(s) from /kaggle/input/rsna-knee-weights; 2 device(s)\n"}
+,{"stream_name":"stdout","time":20.220736913,"data":"[    0.6s] test header pass: 15 series\n"}
+,{"stream_name":"stdout","time":20.227336346,"data":"[    0.6s] decode group 1/1: 336px x 12 slices, crop 130.0 mm -\u003e 20 member(s)\n"}
+,{"stream_name":"stdout","time":20.255136608,"data":"[    0.7s] test laterality: 1 from the tag, 2 from geometry, 0 unresolved; tag and geometry disagree on 0 (0.0% of the tagged)\n"}
+,{"stream_name":"stdout","time":20.256211226,"data":"[    0.7s] test g1: cache (3, 6, 12, 336, 336) = 0.0 GB\n"}
+,{"stream_name":"stdout","time":20.257157849,"data":"[    0.7s] test g1: ordering 12 slot-series (469 slice headers)\n"}
+,{"stream_name":"stdout","time":22.676117814,"data":"[    3.1s] test g1: ordered 12/12 by geometry (0 kept arbitrary) in 2s\n"}
+,{"stream_name":"stdout","time":22.676925893,"data":"[    3.1s] test g1: decoding 12 slot-series\n"}
+,{"stream_name":"stdout","time":23.529804119,"data":"[    4.0s]   test g1 12/12\n"}
+,{"stream_name":"stdout","time":23.533522467,"data":"[    4.0s] test g1: 12/12 slots filled\n"}
+,{"stream_name":"stdout","time":47.92186582,"data":"[   28.1s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":48.815614558,"data":"[   29.2s] e5427d6c21: fingerprint matches within 2.8e-06\n"}
+,{"stream_name":"stdout","time":49.910015004,"data":"[   30.1s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":50.217022964,"data":"[   30.6s]   banked e5427d6c21 fold 2 (10 window(s); 1 member(s)\n"}
+,{"stream_name":"stdout","time":50.438914926,"data":"[   30.9s] d47313baef: fingerprint matches within 2.1e-06\n"}
+,{"stream_name":"stdout","time":51.660313536,"data":"[   32.0s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":51.660372005,"data":"[   32.0s]   banked d47313baef fold 2 (10 window(s); 2 member(s)\n"}
+,{"stream_name":"stdout","time":51.928525972,"data":"[   32.4s] ea3fbf6edf: fingerprint matches within 3.8e-06\n"}
+,{"stream_name":"stdout","time":53.12357243,"data":"[   33.1s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":53.123606674,"data":"[   33.4s]   banked ea3fbf6edf fold 2 (10 window(s); 3 member(s)\n"}
+,{"stream_name":"stdout","time":53.349776489999996,"data":"[   33.8s] 5f8ba4c5ea: fingerprint matches within 3.3e-06\n"}
+,{"stream_name":"stdout","time":54.363112248,"data":"[   34.5s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":54.43792918,"data":"[   34.9s]   banked 5f8ba4c5ea fold 2 (10 window(s); 4 member(s)\n"}
+,{"stream_name":"stdout","time":54.750574454,"data":"[   35.2s] 013dc75703: fingerprint matches within 3.3e-06\n"}
+,{"stream_name":"stdout","time":55.978019363,"data":"[   36.0s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":55.978056512,"data":"[   36.2s]   banked 013dc75703 fold 4 (10 window(s); 5 member(s)\n"}
+,{"stream_name":"stdout","time":56.193914325,"data":"[   36.6s] 2f7e785e82: fingerprint matches within 1.1e-06\n"}
+,{"stream_name":"stdout","time":57.40243283,"data":"[   37.4s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":57.402514619,"data":"[   37.7s]   banked 2f7e785e82 fold 4 (10 window(s); 6 member(s)\n"}
+,{"stream_name":"stdout","time":57.597107219,"data":"[   38.0s] 8baecb9d1b: fingerprint matches within 2.4e-06\n"}
+,{"stream_name":"stdout","time":58.837980846,"data":"[   38.8s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":58.83801646,"data":"[   39.1s]   banked 8baecb9d1b fold 4 (10 window(s); 7 member(s)\n"}
+,{"stream_name":"stdout","time":59.037325692,"data":"[   39.5s] 44bc3c6f14: fingerprint matches within 3.8e-06\n"}
+,{"stream_name":"stdout","time":60.22675865,"data":"[   40.2s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":60.226791097,"data":"[   40.5s]   banked 44bc3c6f14 fold 0 (10 window(s); 8 member(s)\n"}
+,{"stream_name":"stdout","time":60.418664264,"data":"[   40.8s] 44128e3ff3: fingerprint matches within 4.3e-06\n"}
+,{"stream_name":"stdout","time":61.698075306,"data":"[   41.7s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":61.698108917,"data":"[   41.9s]   banked 44128e3ff3 fold 0 (10 window(s); 9 member(s)\n"}
+,{"stream_name":"stdout","time":61.888761839,"data":"[   42.3s] 84079fe8cb: fingerprint matches within 1.2e-06\n"}
+,{"stream_name":"stdout","time":63.191646335,"data":"[   43.4s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":63.191701759,"data":"[   43.4s]   banked 84079fe8cb fold 3 (10 window(s); 10 member(s)\n"}
+,{"stream_name":"stdout","time":63.332338461,"data":"[   43.8s] ed427aa10a: fingerprint matches within 4.6e-06\n"}
+,{"stream_name":"stdout","time":64.574124058,"data":"[   44.6s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":64.574158921,"data":"[   44.8s]   banked ed427aa10a fold 0 (10 window(s); 11 member(s)\n"}
+,{"stream_name":"stdout","time":64.754552917,"data":"[   45.2s] 2dce50ebd9: fingerprint matches within 3.8e-06\n"}
+,{"stream_name":"stdout","time":66.030371363,"data":"[   46.0s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":66.030430427,"data":"[   46.2s]   banked 2dce50ebd9 fold 0 (10 window(s); 12 member(s)\n"}
+,{"stream_name":"stdout","time":66.191002771,"data":"[   46.6s] 3d1f4c48fc: fingerprint matches within 1.3e-06\n"}
+,{"stream_name":"stdout","time":67.465248995,"data":"[   47.4s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":67.46528839,"data":"[   47.7s]   banked 3d1f4c48fc fold 4 (10 window(s); 13 member(s)\n"}
+,{"stream_name":"stdout","time":67.614870515,"data":"[   48.0s] 91f171fe6f: fingerprint matches within 2.6e-06\n"}
+,{"stream_name":"stdout","time":68.892380482,"data":"[   48.9s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":68.892422411,"data":"[   49.1s]   banked 91f171fe6f fold 1 (10 window(s); 14 member(s)\n"}
+,{"stream_name":"stdout","time":69.067153567,"data":"[   49.5s] 8476b29285: fingerprint matches within 4.4e-06\n"}
+,{"stream_name":"stdout","time":69.927133164,"data":"[   50.4s]   banked 8476b29285 fold 1 (10 window(s); 15 member(s)\n"}
+,{"stream_name":"stdout","time":70.509881555,"data":"[   50.7s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":70.662519943,"data":"[   51.1s] 72081758ce: fingerprint matches within 2.9e-06\n"}
+,{"stream_name":"stdout","time":71.884653202,"data":"[   51.9s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":71.884684515,"data":"[   52.2s]   banked 72081758ce fold 3 (10 window(s); 16 member(s)\n"}
+,{"stream_name":"stdout","time":72.092374794,"data":"[   52.5s] 7f8321affc: fingerprint matches within 2.9e-06\n"}
+,{"stream_name":"stdout","time":73.105665938,"data":"[   53.2s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":73.129868041,"data":"[   53.6s]   banked 7f8321affc fold 3 (10 window(s); 17 member(s)\n"}
+,{"stream_name":"stdout","time":73.44364087,"data":"[   53.9s] 1e553ba481: fingerprint matches within 1.7e-06\n"}
+,{"stream_name":"stdout","time":74.528083125,"data":"[   54.6s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":74.536908246,"data":"[   55.0s]   banked 1e553ba481 fold 1 (10 window(s); 18 member(s)\n"}
+,{"stream_name":"stdout","time":74.865135282,"data":"[   55.3s] b7c37cc80e: fingerprint matches within 1.1e-06\n"}
+,{"stream_name":"stdout","time":76.101228557,"data":"[   56.1s] backbone: 12 blocks, last 6 trainable (10.7M params), feature dim 768\n"}
+,{"stream_name":"stdout","time":76.101258321,"data":"[   56.4s]   banked b7c37cc80e fold 3 (10 window(s); 19 member(s)\n"}
+,{"stream_name":"stdout","time":76.283959561,"data":"[   56.7s] f335c812fe: fingerprint matches within 2.9e-06\n"}
+,{"stream_name":"stdout","time":77.157061563,"data":"[   57.6s]   banked f335c812fe fold 1 (10 window(s); 20 member(s)\n"}
+,{"stream_name":"stdout","time":77.386735264,"data":"[   57.8s] DINOv2 fail-closed gate PASS: 20/20 fingerprints and members\n"}
+,{"stream_name":"stdout","time":77.407808483,"data":"[   57.8s] submission.csv = exact no-jitter public-frontier rank mean of 20 member(s); (3, 13)\n"}
+,{"stream_name":"stdout","time":77.412861521,"data":"[   57.8s] done\n"}
+,{"stream_name":"stdout","time":81.406229674,"data":"series root: /kaggle/input/competitions/rsna-knee-abnormality-detection/test_series\n"}
+,{"stream_name":"stdout","time":81.406289223,"data":"3 test studies, 3 with series metadata\n"}
+,{"stream_name":"stdout","time":82.729018967,"data":"loaded m_f0.pt  fold 0  vit_small_patch16_dinov3.lvd1689m pool=xcodex meta=none\n"}
+,{"stream_name":"stdout","time":83.613960069,"data":"loaded m_f1.pt  fold 1  vit_small_patch16_dinov3.lvd1689m pool=xcodex meta=none\n"}
+,{"stream_name":"stdout","time":84.462935804,"data":"loaded m_f2.pt  fold 2  vit_small_patch16_dinov3.lvd1689m pool=xcodex meta=none\n"}
+,{"stream_name":"stdout","time":85.28192624,"data":"loaded m_f3.pt  fold 3  vit_small_patch16_dinov3.lvd1689m pool=xcodex meta=none\n"}
+,{"stream_name":"stdout","time":85.891852648,"data":"loaded m_f4.pt  fold 4  vit_small_patch16_dinov3.lvd1689m pool=xcodex meta=none\n"}
+,{"stream_name":"stdout","time":85.89190454,"data":"\n"}
+,{"stream_name":"stdout","time":85.891911787,"data":"5 fold models ready | input norm: none\n"}
+,{"stream_name":"stdout","time":86.10584325,"data":"device cuda | amp bfloat16 (on=True) | workers 4 | chunk 48 | micro 8\n"}
+,{"stream_name":"stdout","time":89.887031947,"data":"  3/3  0.1m  eta 0.0m\n"}
+,{"stream_name":"stdout","time":89.974595906,"data":"\n"}
+,{"stream_name":"stdout","time":89.974627555,"data":"inference done in 0.1 min\n"}
+,{"stream_name":"stdout","time":93.093332554,"data":"[   73.5s] test-e10 laterality: 1 from the tag, 2 from geometry, 0 unresolved; tag and geometry disagree on 0 (0.0% of the tagged)\n"}
+,{"stream_name":"stdout","time":93.094262641,"data":"[   73.5s] test-e10: cache (3, 3, 8, 224, 224) = 0.0 GB\n"}
+,{"stream_name":"stdout","time":93.094976489,"data":"[   73.5s] test-e10: ordering 8 slot-series (366 slice headers)\n"}
+,{"stream_name":"stdout","time":93.842313546,"data":"[   74.3s] test-e10: ordered 8/8 by geometry (0 kept arbitrary) in 1s\n"}
+,{"stream_name":"stdout","time":93.845949009,"data":"[   74.3s] test-e10: decoding 8 slot-series\n"}
+,{"stream_name":"stdout","time":94.251346375,"data":"[   74.7s]   test-e10 8/8\n"}
+,{"stream_name":"stdout","time":94.518507473,"data":"[   74.7s] test-e10: 8/8 slots filled\n"}
+,{"stream_name":"stdout","time":95.986947198,"data":"[Rad-dual5] twin public-v15 families complete (/kaggle/input/rsna-knee-v52-radimagenet-heads-20260812/v52_radimagenet_heads.pt; /kaggle/input/rsna-knee-e9-radimagenet-heads-v15/v52_radimagenet_heads.pt)\n"}
+,{"stream_name":"stdout","time":98.017893464,"data":"[   78.4s] test-e13 laterality: 1 from the tag, 2 from geometry, 0 unresolved; tag and geometry disagree on 0 (0.0% of the tagged)\n"}
+,{"stream_name":"stdout","time":98.019316749,"data":"[   78.4s] test-e13: cache (3, 4, 8, 224, 224) = 0.0 GB\n"}
+,{"stream_name":"stdout","time":98.02029055,"data":"[   78.4s] test-e13: ordering 11 slot-series (444 slice headers)\n"}
+,{"stream_name":"stdout","time":98.996362676,"data":"[   79.4s] test-e13: ordered 11/11 by geometry (0 kept arbitrary) in 1s\n"}
+,{"stream_name":"stdout","time":98.99737817,"data":"[   79.4s] test-e13: decoding 11 slot-series\n"}
+,{"stream_name":"stdout","time":99.423965593,"data":"[   79.8s]   test-e13 11/11\n"}
+,{"stream_name":"stdout","time":99.691203353,"data":"[   79.9s] test-e13: 11/11 slots filled\n"}
+,{"stream_name":"stdout","time":100.351793744,"data":"[Rad-dual5] E13 FS-crop member complete at Rad-block weight 0.50 (/kaggle/input/rsna-knee-e13-train/rsna_rad_e11/v52_e11_heads.pt)\n"}
+,{"stream_name":"stdout","time":100.361098393,"data":"[Rad-dual5] twin E10 branches complete at alpha=0.50; preserved raw=[\"Baker's\", 'Fracture']\n"}
+,{"stream_name":"stdout","time":100.42982794,"data":"[   80.9s] test-v48-pass2 laterality: 1 from the tag, 2 from geometry, 0 unresolved; tag and geometry disagree on 0 (0.0% of the tagged)\n"}
+,{"stream_name":"stdout","time":100.431016031,"data":"[   80.9s] test-v48-pass2: cache (3, 4, 8, 224, 224) = 0.0 GB\n"}
+,{"stream_name":"stdout","time":100.432201669,"data":"[   80.9s] test-v48-pass2: ordering 7 slot-series (185 slice headers)\n"}
+,{"stream_name":"stdout","time":100.875567214,"data":"[   81.3s] test-v48-pass2: ordered 7/7 by geometry (0 kept arbitrary) in 0s\n"}
+,{"stream_name":"stdout","time":100.876517177,"data":"[   81.3s] test-v48-pass2: decoding 7 slot-series\n"}
+,{"stream_name":"stdout","time":101.189093362,"data":"[   81.6s]   test-v48-pass2 7/7\n"}
+,{"stream_name":"stdout","time":101.46003789,"data":"[   81.6s] test-v48-pass2: 7/7 slots filled\n"}
+,{"stream_name":"stdout","time":101.860087529,"data":"[Rad-dual5] V48 second E13 pass complete at alpha 0.15 on the E11 slot layout\n"}
+,{"stream_name":"stdout","time":102.17358713,"data":"[Rad-dual5] V48 reference branch complete; reference-v15=/kaggle/input/rsna-knee-e9-radimagenet-heads-v15/v52_radimagenet_heads.pt; e13-two-pass=/kaggle/input/rsna-knee-e13-train/rsna_rad_e11/v52_e11_heads.pt; second_alpha=0.15; encoder=/kaggle/input/resnet-50-radimagenet-marwan/ResNet50.pt; elapsed=0.2m\n"}
+,{"stream_name":"stdout","time":102.22917509,"data":"device cuda | gpus 2 | torch 2.10.0+cu128\n"}
+,{"stream_name":"stdout","time":102.230275138,"data":"test root: /kaggle/input/competitions/rsna-knee-abnormality-detection | series dir: /kaggle/input/competitions/rsna-knee-abnormality-detection/test_series\n"}
+,{"stream_name":"stdout","time":102.237913264,"data":"test studies 3 | test series 15\n"}
+,{"stream_name":"stdout","time":105.732967133,"data":"[arm 0] maxspan-v5 | img 336 | slices 64 | span 0.02-0.98 | windows 62 | res 384 | 4s\n"}
+,{"stream_name":"stdout","time":128.772915709,"data":"  [arm 0] 3/3 | 27s\n"}
+,{"stream_name":"stdout","time":129.085467744,"data":"[arm 0] done + freed | 27s\n"}
+,{"stream_name":"stdout","time":132.996820227,"data":"[arm 1] native384dense-v10 | img 384 | slices 64 | span 0.02-0.98 | windows 62 | res 384 | 31s\n"}
+,{"stream_name":"stdout","time":139.328801257,"data":"  [arm 1] 3/3 | 37s\n"}
+,{"stream_name":"stdout","time":139.651907713,"data":"[arm 1] done + freed | 37s\n"}
+,{"stream_name":"stdout","time":141.055164679,"data":"[arm 2] maxspan-v5-reverse | img 336 | slices 64 | span 0.02-0.98 | windows 62 | res 384 | 39s\n"}
+,{"stream_name":"stdout","time":147.651268276,"data":"  [arm 2] 3/3 | 45s\n"}
+,{"stream_name":"stdout","time":147.977637665,"data":"[arm 2] done + freed | 46s\n"}
+,{"stream_name":"stdout","time":151.649142827,"data":"[arm 3] native384-v8 | img 384 | slices 44 | span 0.06-0.94 | windows 42 | res 384 | 49s\n"}
+,{"stream_name":"stdout","time":168.026496779,"data":"  [arm 3] 3/3 | 66s\n"}
+,{"stream_name":"stdout","time":168.317542321,"data":"[arm 3] done + freed | 66s\n"}
+,{"stream_name":"stdout","time":168.318407361,"data":"[blend] global probability mean w={'maxspan-v5': np.float64(0.6), 'native384dense-v10': np.float64(0.1), 'maxspan-v5-reverse': np.float64(0.1), 'native384-v8': np.float64(0.2)}\n"}
+,{"stream_name":"stdout","time":168.324545628,"data":"wrote /kaggle/working/_raptor.csv | 3 rows x 13 cols\n"}
+,{"stream_name":"stdout","time":168.333926867,"data":"                                                StudyInstanceUID  ACL  MCL  Medial Meniscus  Lateral Meniscus  Medial OA  Lateral OA  PF OA  Effusion  Synovitis  Baker's  Contusion  Fracture\n"}
+,{"stream_name":"stdout","time":168.333950375,"data":"1.2.826.0.1.3680043.8.498.10047035057544427318018579121635276191  0.0  0.0              1.0               0.0        1.0         0.0    0.0       0.5        0.0      1.0        0.0       0.0\n"}
+,{"stream_name":"stdout","time":168.333980548,"data":"1.2.826.0.1.3680043.8.498.10062861783145312629332250977456991776  0.5  1.0              0.5               1.0        0.5         0.5    0.5       1.0        1.0      0.5        1.0       1.0\n"}
+,{"stream_name":"stdout","time":168.333985322,"data":"1.2.826.0.1.3680043.8.498.10067514707072572280263481548497591402  1.0  0.5              0.0               0.5        0.0         1.0    1.0       0.0        0.5      0.0        0.5       0.5\n"}
+,{"stream_name":"stdout","time":168.334615329,"data":"DONE 66s\n"}
+,{"stream_name":"stdout","time":216.730758563,"data":"[coat-arm] blended OUR resgated e4/e6/e8 into the public Raptor arm (private alpha 0.400; 3 studies)\n"}
+,{"stream_name":"stderr","time":222.050674735,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":222.050708502,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":222.213762589,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":222.213790689,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":222.941203276,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":223.318800472,"data":"[NbConvertApp] Writing 421068 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":225.789419787,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":227.222526452,"data":"[NbConvertApp] Writing 1201196 bytes to __results__.html\n"}
+]

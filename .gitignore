@@ -1,0 +1,20 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments and dependencies
+.env
+.venv
+env/
+venv/
+ENV/
+_coat_env/
+**/_coat_env/**
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# OS generated files
+.DS_Store
+Thumbs.db
