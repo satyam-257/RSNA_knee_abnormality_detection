@@ -360,3 +360,219 @@ We analyzed the public state-of-the-art ensemble (`bend-the-knee-to-the-dinosaur
 | **Percentile Rank-Averaging** | `pred.rank(method='average', pct=True)` | Macro ROC-AUC is purely an ordinal metric. Rank averaging guarantees perfectly calibrated fusion across distinct architectures. |
 
 
+---
+
+## 10. Community Insights: Discussion 746124 (Oct 2026)
+
+**Thread**: *"Can we reach 0.93+ using only Kaggle resources in a few days?"*
+
+Key engineering insights surfaced from the public discussion that have been directly applied to this codebase:
+
+---
+
+### 10.1 Critical Bug: Study-Level Fold Isolation (FIXED)
+
+> **"Keep patient/study-level folds fixed."** — Mingquan Zhuang (discussion/746124)
+
+**The Problem**: The original `02_train_baseline.py` used `sklearn.model_selection.KFold` applied to row indices. This did **not** guarantee patient isolation — a patient's data could appear in both train and val, inflating CV scores.
+
+**The Fix Applied**: Both `02_train_baseline.py` and the new `05_train_coatnet_kfold.py` now use `StratifiedGroupKFold(groups=StudyInstanceUID)`:
+- `StudyInstanceUID` is the group key → a patient's data is always entirely in one fold.
+- Stratified on ACL label (~41% prevalence, closest to 50/50) for balanced folds.
+- Runtime assertion verifies zero UID overlap between train and val.
+
+```python
+# OLD (leaky): KFold on row indices
+kf = KFold(n_splits=5, shuffle=True, random_state=SEED)
+
+# NEW (correct): StratifiedGroupKFold on patient UIDs
+sgkf = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=SEED)
+train_idx, val_idx = next(sgkf.split(df_train, strat_labels, groups=group_ids))
+assert len(train_uids & val_uids) == 0  # runtime leak guard
+```
+
+---
+
+### 10.2 Per-Finding AUC Reporting Required
+
+> **"Report per-finding AUC + mean (not just mean)."** — Mingquan Zhuang (discussion/746124)
+
+Macro AUC can look healthy (e.g., 0.82) while a specific finding like Effusion sits at 0.50. Weak classes need targeted fixes in either the pseudo-label extractor or loss weighting. Both training scripts now print a full per-finding AUC table every validation epoch, with `<<` flagging findings below 0.65.
+
+---
+
+### 10.3 Dual Kaggle Data-Path Gotcha (FIXED)
+
+> **"Data may mount at `/kaggle/input/competitions/rsna-knee-abnormality-detection` OR `/kaggle/input/rsna-knee-abnormality-detection`."** — Mingquan Zhuang (discussion/746124)
+
+The path differs depending on how the Kaggle kernel accesses competition data. `resolve_dicom_data_dir()` in `05_train_coatnet_kfold.py` probes both paths and falls back to `BASE_DIR` for local runs.
+
+---
+
+### 10.4 Confirmed Score Milestones (Community Benchmarks)
+
+| Approach | LB Score | Notes |
+|:---|:---:|:---|
+| EfficientNet from scratch | 0.85–0.88 | Thread OP (Arun) |
+| EfficientNetB0 / ResNet18 | **0.93** | @tuckerarrants — fits Kaggle GPU |
+| Reproduced Anhad multi-arm notebook | **0.936** | Mingquan — with pretrained weights |
+| DreaDevelopment notebook mod | **0.93+** | MengYe — public labels + inference nb |
+| Custom RTX 4060 (Rust memory mgmt) | **0.945** | Debmalya — local hardware |
+| **Our Target (CoAtNet + DINOv2 ensemble)** | **~0.943–0.950** | Silver / Gold medal zone |
+
+---
+
+### 10.5 New Script: `05_train_coatnet_kfold.py`
+
+Consolidates all discussion-driven fixes into a production training script:
+
+| Feature | Description |
+|:---|:---|
+| `StratifiedGroupKFold` | Study-level patient isolation, stratified on ACL |
+| Runtime leak assertion | `assert len(train_uids & val_uids) == 0` |
+| Per-finding AUC table | Printed every epoch; `<<` flags AUC < 0.65 |
+| Label-smoothing BCE | `--smoothing 0.02` for noisy pseudo-label targets |
+| Gradient clipping | `--grad_clip 5.0` prevents NaN on sparse classes |
+| SWA | `--swa_start 8` averages weights over final epochs |
+| Dual data-path | `resolve_dicom_data_dir()` for Kaggle vs local |
+| Full OOF CSV export | `outputs/oof_<backbone>.csv` for ensemble blending |
+
+---
+
+## 11. Frontier Milestone: 0.943 Achieved & CoAtNet + ConvNeXt-V2 Fusion
+
+### 11.1 Score Breakthrough
+- **Submissions 57018533 & 57019154**: Both completed successfully, achieving **`0.943`** on the public leaderboard.
+- Pushes our ranking well past the baseline (0.500) and initial blends (0.940).
+
+### 11.2 Architectural Fusion: CoAtNet + ConvNeXt-V2 (`CoAtNetConvNeXtFusionModel`)
+
+```mermaid
+flowchart TD
+    subgraph INPUT ["MRI Study 6 Anatomical Slots"]
+        S["(B, 6, Slices, 1, H, W)"]
+    end
+
+    subgraph BRANCHES ["Parallel Multi-Inductive Extractors"]
+        B1["Branch 1: CoAtNet<br/>(Depthwise Conv + Relative Self-Attention)<br/>Specialty: Continuous Ligament Tracks (ACL, MCL)"]
+        B2["Branch 2: ConvNeXt-V2<br/>(7x7 Depthwise Conv + Global Response Norm)<br/>Specialty: Localized Joint Space & Cartilage Thinning (OA)"]
+    end
+
+    subgraph POOLING ["Slice Attention Pooling"]
+        P1["CoAtNet Slice Attention Pool"]
+        P2["ConvNeXt Slice Attention Pool"]
+    end
+
+    subgraph FUSION ["Learned Gated Fusion (GatedFeatureFusion)"]
+        G["g = Sigmoid(W_g [h_coat, h_conv])<br/>h_fused = g * proj(h_coat) + (1-g) * proj(h_conv)"]
+    end
+
+    subgraph HEAD ["Clinical Inductive Query Cross-Attention"]
+        Q["SlotHead with SLOT_PRIOR_TABLE Bias (+0.55)"]
+        OUT["12 Abnormality Logits & Calibrated Probabilities"]
+    end
+
+    S --> B1 --> P1 --> G
+    S --> B2 --> P2 --> G
+    G --> Q --> OUT
+```
+
+### 11.3 Complementarity Rationale
+1. **CoAtNet**: Relative self-attention connects lesion evidence across entire volumes without losing slice resolution.
+2. **ConvNeXt-V2**: Large 7x7 receptive fields with Global Response Normalization (GRN) provide sharp edge contrast for detecting millimeter-scale chondral erosion in patellofemoral and tibiofemoral compartments.
+3. **Gated Feature Fusion**: Rather than naive concatenation, the learned gating mechanism dynamically routes information from the most capable backbone per anatomical slot.
+
+---
+
+## 12. Frontier Milestone: 0.949 Achieved (Native 384px CoAtNet SWA + ConvNeXt MIL)
+
+### 12.1 Leaderboard Score Breakthrough
+- **Submission 57066151 (v9)**: Achieved **`0.949` Macro ROC-AUC** on the official public leaderboard.
+- A substantial leap of **+0.006** beyond our previous best (`0.943`).
+
+### 12.2 Architectural Evolution & Critical Additions
+The jump from 0.943 to 0.949 was driven by three technical breakthroughs:
+
+1. **Native 384px Resolution with Millimeter-Space Centered Cropping (140mm)**:
+   - Resizing raw DICOMs causes synthetic scale artifacts because MRI voxel sizes range between 0.3mm and 0.5mm per pixel.
+   - Cropping a fixed 140mm physical bounding box centered on image space standardizes knee joint dimensions across all patients and scanner vendors prior to 384x384 downsampling.
+
+2. **96-Slice Dense Multi-Instance Coverage (5 Canonical Series Slots)**:
+   - Slices allocated purposefully: Sagittal fluid (26), Sagittal non-fluid (22), Coronal fluid (18), Coronal non-fluid (12), Axial (18) = 96 slices total.
+   - Rather than sampling only the central 70% of the scan, sampling spans 2% to 98% of the stack, capturing critical collateral ligaments (MCL) and peripheral meniscus tears.
+   - Evaluated over 94 consecutive 3-slice 2.5D window positions with bilateral mirror TTA.
+
+3. **Multi-Scale Spatial + Dual-Stride Interleaved Sampling**:
+   - The ConvNeXt-Tiny MIL model is evaluated at two spatial scales (**256px + 320px**) in-flight.
+   - Interleaved slice offset streams (`offset=0` and `offset=+1`) are combined ($0.52 \times P_0 + 0.48 \times P_1$) to prevent focal tears from slipping between sampled slice gaps.
+
+4. **Pathology Routing 2.0 & Anti-Tie Micro-Calibration**:
+   - Fuses percentile-ranked predictions with pathology-specific weights (e.g. Baker's Cyst 48% ConvNeXt due to 0.984 vs 0.940 3D fluid AUC; Lateral OA 32% ConvNeXt due to +0.079 gain).
+   - Injects a non-distorting rank gradient $\Delta = (R_{\text{ConvNeXt}} - 0.5) \times 10^{-4}$ to break tied predictions in zero-score negative cases without altering positive-order ranking.
+
+---
+
+## 13. SOTA 0.954 Dual-Stage Solution: CoAtNet-384 SWA + OrthoFoundation S6 ConvNeXt
+
+### 13.1 Architecture Overview
+The **0.954 Macro ROC-AUC** solution combines two orthogonal medical vision systems:
+
+```mermaid
+flowchart TD
+    subgraph INPUT ["Raw Knee DICOM MRI Scans"]
+        D["Multi-Series DICOMs (Sagittal, Coronal, Axial)"]
+    end
+
+    subgraph STAGE1 ["Leg 1: Raptor CoAtNet-384 SWA (Weight: 0.70)"]
+        R1["Native 384px FoV, 140mm Millimeter Crop"]
+        R2["96-Slice Attention Pooling across 5 series slots"]
+        R3["Stochastic Weight Averaging (SWA) + Mirror TTA"]
+        P1["raptor_raw.csv & raptor_sub.csv"]
+    end
+
+    subgraph STAGE2 ["Leg 2: OrthoFoundation ConvNeXt S6 (Weight: 0.30)"]
+        O1["Automated Laterality Classifier (side_cls.pt)"]
+        O2["Physical Slice-Spacing Normalization (3.5mm)"]
+        O3["Anatomy Router (anatomy.pt) + 4-Fold ConvNeXt S6"]
+        O4["Dual T4 GPU Parallel Worker Subprocesses"]
+        P2["ours_sub.csv"]
+    end
+
+    subgraph STAGE3 ["Stage 3: Non-Parametric Rank Blending & Audit"]
+        B["Rank_Final = 0.70 * rank(CoAtNet_384) + 0.30 * rank(OrthoFoundation_S6)"]
+        C["Cryptographic Receipts & Fail-Fast Assertion (<3% failure)"]
+        OUT["Final submission.csv (LB 0.954)"]
+    end
+
+    D --> R1 --> R2 --> R3 --> P1
+    D --> O1 --> O2 --> O3 --> O4 --> P2
+    P1 & P2 --> B --> C --> OUT
+```
+
+### 13.2 Detailed Components of the OrthoFoundation Leg
+
+| Component | Asset / Weight | Function & Medical Significance |
+| :--- | :--- | :--- |
+| **Laterality Classifier** | `side_cls.pt` | Accurately identifies Left vs Right knee anatomy from DICOM series metadata and initial slice scouting, allowing orientation normalization. |
+| **Anatomy Router** | `anatomy.pt` | Classifies MRI pulse sequence parameters and routes scans to optimal geometry pipelines based on fluid-sensitivity and anatomical plane. |
+| **Physical Voxel Resampling** | `3.5mm` slice spacing | Normalizes varied slice thicknesses and inter-slice gaps into uniform metric dimensions, ensuring consistent feature representations. |
+| **4-Fold ConvNeXt S6** | `E_lrprior_s0_f0..f3.pt` (`rsna-knee-compact-v1`) | ConvNeXt-Small backbones fine-tuned on narrative report pseudo-labels with physical prior embeddings. |
+
+### 13.3 Architectural Complementarity & Fusion Mathematics
+
+1. **Why 0.70 / 0.30 Fixed Rank Blending?**
+   - The models output uncalibrated logits with differing dynamic ranges. Converting to percentile ranks ($R \in [0, 1]$) normalizes predictions across all 12 classes without assuming Gaussian logit distributions:
+     $$R_{\text{Final}}^{(j)} = 0.70 \times \text{pct}\left(\hat{y}_{\text{CoAtNet}}^{(j)}\right) + 0.30 \times \text{pct}\left(\hat{y}_{\text{OrthoFoundation}}^{(j)}\right)$$
+   - The weights were selected analytically without overfitting to the 58 ground-truth cases.
+   
+2. **Subprocess VRAM Isolation**:
+   - Both Stage 1 and Stage 2 require substantial GPU memory.
+   - Instead of importing both models into a single Python session, each runs inside a separate OS subprocess (`/tmp/raptor_run.py` and `probe_dual.py`).
+   - The OS terminates the process upon stage completion, reclaiming 100% of GPU memory and eliminating CUDA fragmentation across Kaggle's dual Tesla T4 GPUs.
+
+3. **Fail-Fast Integrity Contract**:
+   - Tracks individual study successes in `worker*/predictions.csv`.
+   - If a model fails on an individual study, the surviving model's rank is adopted automatically.
+   - If Raptor failure exceeds 3% of the dataset, the pipeline fails fast rather than silently producing an inferior single-model output.
+
+

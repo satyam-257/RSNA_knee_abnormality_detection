@@ -8,7 +8,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
-from sklearn.model_selection import KFold
+from sklearn.model_selection import StratifiedGroupKFold
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR))
@@ -58,12 +58,21 @@ def main():
         print("[DEBUG MODE] Using first 20 samples")
         df_train = df_train.head(20).copy()
 
-    # K-Fold Cross Validation by StudyInstanceUID
-    kf = KFold(n_splits=5, shuffle=True, random_state=SEED)
-    train_idx, val_idx = next(kf.split(df_train))
+    # StratifiedGroupKFold by StudyInstanceUID — prevents patient-level data leakage
+    # (Key insight from discussion/746124: plain KFold on row indices leaks patients)
+    acl_col = "ACL_pseudo" if "ACL_pseudo" in df_train.columns else "ACL"
+    strat_labels = (df_train[acl_col].fillna(0.5) >= 0.5).astype(int).values
+    group_ids = df_train["StudyInstanceUID"].values
+
+    sgkf = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=SEED)
+    train_idx, val_idx = next(sgkf.split(df_train, strat_labels, groups=group_ids))
 
     train_df = df_train.iloc[train_idx].reset_index(drop=True)
     val_df = df_train.iloc[val_idx].reset_index(drop=True)
+
+    # Sanity: verify zero patient overlap
+    assert len(set(train_df["StudyInstanceUID"]) & set(val_df["StudyInstanceUID"])) == 0, \
+        "Patient leakage detected between train and val folds!"
 
     print(f"Train studies: {len(train_df)} | Val studies: {len(val_df)}")
 
@@ -84,7 +93,7 @@ def main():
         labels=LABELS,
         num_slices=args.num_slices,
         target_size=(IMG_SIZE, IMG_SIZE),
-        is_training=True
+        is_training=False  # No augmentation during validation
     )
 
     train_loader = DataLoader(
@@ -170,6 +179,11 @@ def main():
         )
 
         print(f"Epoch [{epoch}/{args.epochs}] | Train Loss: {train_loss:.4f} | Val Macro ROC-AUC: {val_auc:.4f}")
+        # Per-finding AUC (key signal for diagnosing weak classes, per discussion/746124)
+        col_w = max(len(k) for k in per_class)
+        for lbl, auc_v in per_class.items():
+            marker = " <<" if not (auc_v != auc_v) and auc_v < 0.65 else ""
+            print(f"  {lbl:<{col_w}} : {auc_v:.4f}{marker}")
 
         if val_auc > best_val_auc:
             best_val_auc = val_auc

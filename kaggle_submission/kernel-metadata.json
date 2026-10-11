@@ -1,6 +1,6 @@
 {
-  "id": "satyamkumar0725/rsna-knee-speedy-coatnet-dinosaurs-ensemble",
-  "title": "RSNA Knee Speedy CoAtNet Dinosaurs Ensemble",
+  "id": "satyamkumar0725/rsna-knee-speedy-coatnet-convnext-mil-ensemble",
+  "title": "RSNA Knee Speedy CoAtNet ConvNeXt MIL Ensemble",
   "code_file": "submission_notebook.ipynb",
   "language": "python",
   "kernel_type": "notebook",
@@ -12,27 +12,13 @@
     "gpu"
   ],
   "dataset_sources": [
-    "dreaddevelopment/raptor-knee-maxspan",
-    "dreaddevelopment/raptor-knee-native384",
-    "dreaddevelopment/raptor-knee-native384dense",
-    "mattiaangeli/knee-mri-fold-weights",
-    "mattiaangeli/opencv-python-headless-4120088-x86",
-    "marwanmath/resnet-50-radimagenet-marwan",
-    "mattiaangeli/rsna-knee-coat-resgated-ep10-top3",
-    "antoinegg1/rsna-knee-e11-diverse-heads-v20",
-    "antoinegg1/rsna-knee-e9-radimagenet-heads-v15",
-    "pilkwang/rsna-knee-llm-labels",
-    "prvsiyan/rsna-knee-v52-radimagenet-heads-20260812",
-    "pilkwang/rsna-knee-weights"
+    "heliosli/rsna-knee-compact-v1",
+    "nartaa/rsna-knee-publication-swa-weights-20261007",
+    "heliosli/rsna-orthofoundation-fold0-epoch7-20261004"
   ],
-  "kernel_sources": [
-    "sofiaanjenje/rsna-knee-e11-train",
-    "sofiaanjenje/rsna-knee-e13-train"
-  ],
+  "kernel_sources": [],
   "competition_sources": [
     "rsna-knee-abnormality-detection"
   ],
-  "model_sources": [
-    "metaresearch/dinov2/PyTorch/small/1"
-  ]
+  "model_sources": []
 }

@@ -18,3 +18,7 @@ _coat_env/
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Output artifacts and scratch
+outputs/
+scratch/

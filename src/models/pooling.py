@@ -38,6 +38,22 @@ COATNET_ENSEMBLE_WEIGHTS: Dict[str, float] = {
     "Baker's": 0.60,
 }
 
+# 4-Pillar Finding-Specific Consensus Weights: (CoAtNet, ConvNeXt-V2, DINOv2, RadImageNet)
+FOUR_PILLAR_WEIGHTS: Dict[str, Tuple[float, float, float, float]] = {
+    'ACL':              (0.50, 0.15, 0.25, 0.10),
+    'MCL':              (0.45, 0.20, 0.25, 0.10),
+    'Medial Meniscus':  (0.45, 0.25, 0.15, 0.15),
+    'Lateral Meniscus': (0.50, 0.25, 0.15, 0.10),
+    'Medial OA':        (0.25, 0.45, 0.10, 0.20),
+    'Lateral OA':       (0.25, 0.45, 0.10, 0.20),
+    'PF OA':            (0.25, 0.45, 0.15, 0.15),
+    'Effusion':         (0.30, 0.15, 0.45, 0.10),
+    'Synovitis':        (0.30, 0.15, 0.45, 0.10),
+    "Baker's":          (0.35, 0.15, 0.40, 0.10),
+    'Contusion':        (0.40, 0.20, 0.20, 0.20),
+    'Fracture':         (0.45, 0.20, 0.15, 0.20),
+}
+
 
 def apply_finding_specific_pooling(
     slice_probs: Union[np.ndarray, torch.Tensor],
@@ -156,4 +172,45 @@ def blend_predictions(
             blended += w_arr[i] * r
 
     # Final re-ranking of blended predictions to guarantee uniform distribution
+    return rank_percentile(blended)
+
+
+def blend_four_pillars(
+    p_coat: np.ndarray,
+    p_conv: np.ndarray,
+    p_dino: np.ndarray,
+    p_rad: np.ndarray,
+    weights: Dict[str, Tuple[float, float, float, float]] = FOUR_PILLAR_WEIGHTS,
+    target_names: Optional[List[str]] = None
+) -> np.ndarray:
+    """
+    Fuses predictions from all 4 frontier model families:
+    1. CoAtNet Consensus
+    2. ConvNeXt-V2 Pool
+    3. DINOv2 Self-Supervised ViT
+    4. RadImageNet ResNet-50
+
+    Applies finding-specific clinical weighting and final percentile ranking.
+    """
+    if target_names is None:
+        target_names = LABELS
+
+    # Rank normalize each pillar into [0.0, 1.0]
+    r_coat = rank_percentile(p_coat)
+    r_conv = rank_percentile(p_conv)
+    r_dino = rank_percentile(p_dino)
+    r_rad  = rank_percentile(p_rad)
+
+    n_samples, n_targets = r_coat.shape
+    blended = np.zeros((n_samples, n_targets), dtype=np.float64)
+
+    for j, name in enumerate(target_names):
+        w_c, w_x, w_d, w_r = weights.get(name, (0.35, 0.25, 0.25, 0.15))
+        blended[:, j] = (
+            w_c * r_coat[:, j] +
+            w_x * r_conv[:, j] +
+            w_d * r_dino[:, j] +
+            w_r * r_rad[:, j]
+        )
+
     return rank_percentile(blended)
