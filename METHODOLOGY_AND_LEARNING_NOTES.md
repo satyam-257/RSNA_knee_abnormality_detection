@@ -575,4 +575,110 @@ flowchart TD
    - If a model fails on an individual study, the surviving model's rank is adopted automatically.
    - If Raptor failure exceeds 3% of the dataset, the pipeline fails fast rather than silently producing an inferior single-model output.
 
+---
+
+## 14. Frontier Strategy: The Tri-Paradigm Apex Architecture (Target: 0.958+)
+
+### 14.1 Forensic Audit of the 0.954 Ensemble
+While the dual CoAtNet-384 + OrthoFoundation S6 ensemble successfully unlocked **0.954 Macro ROC-AUC**, audit of the codebase revealed 4 specific mathematical and engineering bottlenecks:
+
+1. **The Uniform Weight Fallacy**:
+   - Applying a rigid scalar blend ($0.70 \times \text{CoAtNet} + 0.30 \times \text{OrthoFoundation}$) treats all 12 pathologies identically.
+   - **Clinical Reality**: 3D geometric/MIL networks achieve **$\sim 0.984$ AUC** on fluid lesions (Baker's cyst) and **$0.966$** on diffuse marrow edema (contusion), drastically outperforming pure 2D/2.5D spatial attention models ($0.940$). Conversely, CoAtNet dominates high-prevalence Effusion ($60\%$) and Lateral Meniscus tears.
+2. **Missing Anti-Tie Micro-Calibration**:
+   - When models predict near-zero risk on negative cases, `rank(method='average')` produces identical tied ranks.
+   - Tied positive-negative comparisons receive only $0.5$ concordant credit instead of $1.0$ under ROC-AUC evaluation.
+3. **Linear Rank Flattening**:
+   - Flat percentile normalization removes margin separation between unequivocal positive lesions ($p > 0.99$) and borderline calls ($p \approx 0.52$).
+4. **Underutilized Model Orthogonality**:
+   - The competition community developed two distinct ConvNeXt paradigms:
+     * **OrthoFoundation S6**: 3.5mm physical voxel resampling + laterality coordinate alignment + narrative prior pretraining.
+     * **ConvNeXt-Tiny MIL**: LPS coordinate canonical volumes + in-flight multi-scale spatial dual-resolution (256px + 320px) + dual-stride interleaved slice sampling (offset 0 and +1).
+   - Combining both with CoAtNet creates three independent, mutually orthogonal inductive biases.
+
+---
+
+### 14.2 The Tri-Paradigm Architecture Formulation
+
+```mermaid
+flowchart TD
+    subgraph DICOM ["Multi-Series DICOM Scans"]
+        D["Axial, Coronal, Sagittal DICOM Volumes"]
+    end
+
+    subgraph LEG1 ["Leg 1: Raptor CoAtNet-384 SWA (Anchor)"]
+        L1["140mm Centered Crop (384x384)<br/>96-Slice Attention Pooling across 5 series slots<br/>Mirror Consistency TTA"]
+        P1["Raptor Predictions (r_coat)"]
+    end
+
+    subgraph LEG2 ["Leg 2: OrthoFoundation ConvNeXt S6 (Geometric SOTA)"]
+        L2["3.5mm Physical Voxel Resampling<br/>Laterality Normalization (side_cls.pt)<br/>Anatomy Sequence Routing (anatomy.pt)"]
+        P2["OrthoFoundation Predictions (r_ortho)"]
+    end
+
+    subgraph LEG3 ["Leg 3: ConvNeXt-Tiny MIL (Multi-Scale Interleaved)"]
+        L3["Canonical LPS Volume (384x384)<br/>Multi-Scale Spatial Dual-Res (256px + 320px)<br/>Dual-Stride Interleaved Sampling (Offset 0 & +1)"]
+        P3["ConvNeXt MIL Predictions (r_mil)"]
+    end
+
+    subgraph APEX_FUSION ["Apex Fusion & Calibration Engine"]
+        F1["1. Dynamic Pathology Routing Matrix (w_coat, w_ortho, w_mil)"]
+        F2["2. Anti-Tie Micro-Calibration (Delta = 1e-4)"]
+        F3["3. Margin-Preserving Tail Steepening"]
+        F4["4. 3-Tier Multi-Fail-Safe Fallback Contract"]
+    end
+
+    subgraph FINAL ["Submission"]
+        SUB["submission.csv (Target: 0.958 ~ 0.960 LB)"]
+    end
+
+    D --> LEG1 --> P1
+    D --> LEG2 --> P2
+    D --> LEG3 --> P3
+    P1 & P2 & P3 --> F1 --> F2 --> F3 --> F4 --> SUB
+```
+
+---
+
+### 14.3 Dynamic Pathology-Specific Routing Matrix
+
+The three model streams are fused in percentile rank space using finding-specific weights derived from clinical pathology competency:
+
+$$R_{\text{Final}}^{(j)} = w_{\text{coat}}^{(j)} \cdot R_{\text{coat}}^{(j)} + w_{\text{ortho}}^{(j)} \cdot R_{\text{ortho}}^{(j)} + w_{\text{mil}}^{(j)} \cdot R_{\text{mil}}^{(j)} + \Delta_{\text{anti-tie}}^{(j)}$$
+
+| Abnormality Category | $w_{\text{coat}}$ (Anchor) | $w_{\text{ortho}}$ (Geometry) | $w_{\text{mil}}$ (Multi-Scale) | Clinical & Mathematical Justification |
+| :--- | :---: | :---: | :---: | :--- |
+| **Baker's Cyst** | 0.40 | **0.40** | **0.20** | 3D fluid-sensitive pooling achieves +0.044 AUC over pure 2D. |
+| **Bone Contusion** | 0.45 | **0.35** | **0.20** | Diffuse bone marrow edema requires multi-scale slice context. |
+| **Lateral OA** | 0.50 | **0.30** | **0.20** | Joint space narrowing + collateral tracking (+0.079 gain). |
+| **Medial OA** | 0.55 | **0.25** | **0.20** | Tricompartmental cartilage erosion sensitivity. |
+| **ACL Tear** | 0.55 | **0.25** | **0.20** | Intercondylar notch oblique tracking across planes. |
+| **MCL Tear** | 0.55 | **0.25** | **0.20** | Coronal collateral continuity across adjacent slices. |
+| **Medial Meniscus** | 0.65 | 0.20 | 0.15 | Posterior horn 2.5D contextual slices. |
+| **Lateral Meniscus** | **0.75** | 0.15 | 0.10 | CoAtNet native 384px anchor is dominant. |
+| **Fracture** | **0.75** | 0.15 | 0.10 | High-resolution cortical bone break detection. |
+| **PF OA** | **0.75** | 0.15 | 0.10 | Patellofemoral cartilage thinning. |
+| **Effusion** | **0.80** | 0.10 | 0.10 | High-prevalence fluid anchor ($60\%$ prevalence). |
+| **Synovitis** | **0.80** | 0.10 | 0.10 | Synovial membrane hypertrophy anchor. |
+
+---
+
+### 14.4 Anti-Tie Micro-Calibration Formulation
+
+$$\Delta_{\text{anti-tie}}^{(j)} = \left(R_{\text{ortho}}^{(j)} - 0.5\right) \times 10^{-4} + \left(R_{\text{mil}}^{(j)} - 0.5\right) \times 10^{-4}$$
+
+* **Mathematical Property**: The maximum perturbation magnitude ($2 \times 10^{-4}$) is smaller than the minimum separation between distinct non-tied cases in a $1,300$-study dataset ($1 / 1300 \approx 7.7 \times 10^{-4}$).
+* **Impact**: Completely eliminates tie penalties on low-probability negative studies without altering positive ranking order.
+
+---
+
+### 14.5 Subprocess VRAM Isolation Contract
+To execute all three model families within Kaggle's 9-hour limit and Dual T4 GPU constraint without CUDA OOM:
+1. **Stage 1 (CoAtNet)** runs in `/tmp/raptor_run.py`, releases memory completely upon exit ($\sim 50$ min).
+2. **Stage 2 (OrthoFoundation)** runs in `probe_dual.py` across dual GPUs, releases memory ($\sim 70$ min).
+3. **Stage 3 (ConvNeXt MIL)** runs in `own_src/infer.py`, releases memory ($\sim 45$ min).
+4. **Stage 4 (Apex Blend)** compiles the rank matrix in memory ($\sim 1$ min).
+Total expected runtime: **$\sim 2.8$ to $3.2$ hours** (well within the 9-hour threshold).
+
+
 

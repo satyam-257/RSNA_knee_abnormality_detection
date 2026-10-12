@@ -14,7 +14,8 @@
   "dataset_sources": [
     "heliosli/rsna-knee-compact-v1",
     "nartaa/rsna-knee-publication-swa-weights-20261007",
-    "heliosli/rsna-orthofoundation-fold0-epoch7-20261004"
+    "heliosli/rsna-orthofoundation-fold0-epoch7-20261004",
+    "goodpjw2008/rsna-knee-2-5d-convnext-reader"
   ],
   "kernel_sources": [],
   "competition_sources": [
